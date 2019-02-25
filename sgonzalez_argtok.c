@@ -11,18 +11,20 @@ int get_len(char* str){
   return size;
 }
 // Replaces an empty space with '\0'
-void split_str(char* input){
+void split_str(char* input, int length ){
   int i = 0;
-  for(int i = 0; i < get_len(input); i++){
+  printf("%d\n",length);
+  for(int i = 0; i < length; i++){
     if (input[i] == ' '){
       input[i] = '\0';
     }
   }
 }
 //Counts total words given the '\0' character
-int count_words(char* str){
+int count_words(char* str, int length){
   int count = 0;
-  for(int i = 0; i < get_len(str); i++){
+  if(length > 0){count++;}
+  for(int i = 0; i < length; i++){
     if (str[i] == '\0'){
       count++;
     }
@@ -30,19 +32,21 @@ int count_words(char* str){
   return count;
 }
 
-
-
-
 // Returns the address of the array of pointers after allocation
 
 char **argtok(char* str){
+  int length = get_len(str);
+   //insert '\0' in blank spaces
+  split_str(str,length);
   //create array of pointers
-  char **mem = (char**)calloc(count_words(str) +1,sizeof(char*));
-  //insert '\0' in blank spaces
-  split_str(str);
+  char **mem = (char**)calloc(count_words(str, length) +1,sizeof(char*));
+  mem[count_words(str, length)] = NULL;
+  printf("Null expected: %s\n",mem[count_words(str, length)]);
+
+  printf("Count Words = %i\n",count_words(str,length));
   //counter for words in input
   int word_count = 0;
-  word_count = count_words(str);
+  word_count = count_words(str,length);
 
   //loop to allocate memory for found words & store words in pointer array
   int x = 0;//to control indexing of word count
@@ -57,7 +61,7 @@ char **argtok(char* str){
   while(x < word_count){ //for every word..
     //count to keep track of words
     int count = 0;
-    for (int i = 0; i < get_len(str); ++i)
+    for (int i = 0; i < length; i++)
     {
       if (str[i] != '\0')
       {
@@ -69,28 +73,40 @@ char **argtok(char* str){
         index++;
       }
     }
-
+    printf("index: %i\n",index);
     //given the size of each word, allocate space for each word
     // note: each size of each word is stored in array "arr"
-    char* myString  = (char*)malloc(arr[word_count]);
+    char* myString  = (char*)calloc(arr[x],sizeof(char));
 
     //now populate the created array with the actual word
-    for (int i = 0; i < get_len(myString); ++i)
+    for (int i = 0; i < arr[x]; ++i)
     {
-      myString[i] = str[start_index];
+      myString[i] = str[start_index+i];
     }
     // set start index = size of current word + 2 
     // h e l l o \0 w o r l  d \0
     // 1 2 3 4 5 6  7 8 9 10 11 12
     // 5 + 2 = 7 ; 7 is the starting index of next word
-    start_index = arr[word_count] + 2 ;
+    start_index = arr[x] + 1 ;
+    printf("arr[x] = %i\n",arr[x]);
 
     //save myString in pointer array
-    mem[word_count] = (char*)myString;
+    mem[x] = myString;
 
     //increment word counter
-    word_count++;
+    x++;
   }
-  mem[count_words(str) + 1] = NULL;
+  
+  //some black magic is happenning here!...
+  //segmentation faul occurs when we run 'til count words +1
+  for (int i = 0; i < count_words(str,length)+1 ;i++)
+  {
+   //printf("value of i: %i\n",i);
+   printf("Index: %i %s\n",i,mem[i]);
+  }
+  //printf("%s\n",mem[0]);
+ // printf("%s\n",mem[1]);
+  //printf(" %s\n",mem[count_words(str, length)]);
+
   return mem;
 }

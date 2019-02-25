@@ -2,9 +2,12 @@
 #include <stdlib.h>
 #include "sgonzalez_argtok.h"
 int  main() {
-	char str[] = "Hello World";
-	split_str(str);//  in place splitting
-	printf("%s\n",str);
+
+	char word[] = "Hello";
+	//call to argtok
+	char** my_mem = argtok(word);
+	
+	free(my_mem);
 
   return 0;
 }
