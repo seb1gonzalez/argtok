@@ -22,8 +22,8 @@ void split_str(char* input){
 //Counts total words given the '\0' character
 int count_words(char* str){
   int count = 0;
-  for(int i = 0; i < get_len(input); i++){
-    if (input[i] == '\0'){
+  for(int i = 0; i < get_len(str); i++){
+    if (str[i] == '\0'){
       count++;
     }
   }
@@ -37,7 +37,7 @@ int count_words(char* str){
 
 char **argtok(char* str){
   //create array of pointers
-  char *mem = (char*)calloc(get_total_words(str) +1,sizeof(char));
+  char **mem = (char**)calloc(count_words(str) +1,sizeof(char*));
   //insert '\0' in blank spaces
   split_str(str);
   //counter for words in input
@@ -86,11 +86,11 @@ char **argtok(char* str){
     start_index = arr[word_count] + 2 ;
 
     //save myString in pointer array
-    mem[word_count] = myString;
+    mem[word_count] = (char*)myString;
 
     //increment word counter
     word_count++;
   }
-  mem[get_len(mem) - 1] = NULL;
+  mem[count_words(str) + 1] = NULL;
   return mem;
 }
