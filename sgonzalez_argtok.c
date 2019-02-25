@@ -10,6 +10,24 @@ int get_len(char* str){
   }
   return size;
 }
+//inserts sizes of words found in string // USE AFTER split_str()
+void markSizes(char* str, int* arr, int length){
+  int word_size = 0;
+  int word_index = 0;;
+  for (int i = 0; i < length; i++){
+    if(str[i] != '\0'){
+      word_size++;
+      arr[word_index] = word_size;
+    }
+    else if(str[i] == '\0'){
+      word_size = 0;
+      word_index++;
+    }
+
+  }//end FOR loop
+
+}
+
 // Replaces an empty space with '\0'
 void split_str(char* input, int length ){
   int i = 0;
@@ -34,9 +52,12 @@ int count_words(char* str, int length){
 // Returns the address of the array of pointers after allocation
 
 char **argtok(char* str){
+  //get the actual current length of full string
   int length = get_len(str);
+
    //insert '\0' in blank spaces
   split_str(str,length);
+
   //create array of pointers
   char **mem = (char**)calloc(count_words(str, length) +1,sizeof(char*));
   mem[count_words(str, length)] = NULL;
@@ -45,8 +66,8 @@ char **argtok(char* str){
   int word_count = 0;
   word_count = count_words(str,length);
 
-  //loop to allocate memory for found words & store words in pointer array
-  int x = 0;//to control indexing of word count
+
+  int x = 0;//to control while loop; also used as index for pointer array "mem"
 
   //array to keep track of size of each word in input
   int arr[word_count];
@@ -56,53 +77,44 @@ char **argtok(char* str){
   int start_index = 0;
 
   while(x < word_count){ //for every word..
-    //count to keep track of words
-    int count = 0;
-    for (int i = 0; i < length; i++)
-    {
-      if (str[i] != '\0')
-      {
-        count++;
-        arr[index] = count;
-      }
-      else{
-        arr[index] = count;
-        count = 0;
-        index++;
-      }
-    }
+
+    //get length of all words stored in array
+    markSizes(str,arr,length);
+
 
     //given the size of each word, allocate space for each word
     // note: each size of each word is stored in array "arr"
     char* myString  = (char*)calloc(arr[x],sizeof(char));
 
     //now populate the created array with the actual word
-    for (int i = 0; i < arr[x]; ++i)
+    for (int i = 0; i < arr[x]; i++)
     {
-      myString[i] = str[start_index+i];
+      if (str[start_index] == '\n')// ignore the enter key after getting the input
+      {
+        break;
+      }
+
+      myString[i] = str[start_index];
+      start_index++;
     }
-    // set start index = size of current word + 2 
-    // h e l l o \0 w o r l  d \0
-    // 1 2 3 4 5 6  7 8 9 10 11 12
-    // 5 + 2 = 7 ; 7 is the starting index of next word
-    start_index = arr[x] + 1 ;
+    //start index++ again to skip the \0 character between each word
+    start_index++;
     //save myString in pointer array
     mem[x] = myString;
 
     //increment word counter
     x++;
-  }
+  }//end While loop
   
-  //some black magic is happenning here!...
-  //segmentation faul occurs when we run 'til count words +1
-  for (int i = 0; i < count_words(str,length)+1 ;i++)
-  {
-   //printf("value of i: %i\n",i);
-   printf("Index: %i %s\n",i,mem[i]);
+  for (int i = 0; i < count_words(str,length)+1 ;i++){
+    printf("> %s\n",mem[i]);
   }
-  //printf("%s\n",mem[0]);
- // printf("%s\n",mem[1]);
-  //printf(" %s\n",mem[count_words(str, length)]);
 
   return mem;
+}
+
+
+//prompt to get the input string from a user
+void prompt(){
+  printf("%s","$ " );
 }

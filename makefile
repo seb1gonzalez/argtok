@@ -3,4 +3,4 @@ compile:
 run:
 	./main
 clean:
-	rm main.o
+	rm main
