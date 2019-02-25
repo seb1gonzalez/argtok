@@ -13,8 +13,7 @@ int get_len(char* str){
 // Replaces an empty space with '\0'
 void split_str(char* input, int length ){
   int i = 0;
-  printf("%d\n",length);
-  for(int i = 0; i < length; i++){
+    for(int i = 0; i < length; i++){
     if (input[i] == ' '){
       input[i] = '\0';
     }
@@ -41,9 +40,7 @@ char **argtok(char* str){
   //create array of pointers
   char **mem = (char**)calloc(count_words(str, length) +1,sizeof(char*));
   mem[count_words(str, length)] = NULL;
-  printf("Null expected: %s\n",mem[count_words(str, length)]);
 
-  printf("Count Words = %i\n",count_words(str,length));
   //counter for words in input
   int word_count = 0;
   word_count = count_words(str,length);
@@ -66,6 +63,7 @@ char **argtok(char* str){
       if (str[i] != '\0')
       {
         count++;
+        arr[index] = count;
       }
       else{
         arr[index] = count;
@@ -73,7 +71,7 @@ char **argtok(char* str){
         index++;
       }
     }
-    printf("index: %i\n",index);
+
     //given the size of each word, allocate space for each word
     // note: each size of each word is stored in array "arr"
     char* myString  = (char*)calloc(arr[x],sizeof(char));
@@ -88,8 +86,6 @@ char **argtok(char* str){
     // 1 2 3 4 5 6  7 8 9 10 11 12
     // 5 + 2 = 7 ; 7 is the starting index of next word
     start_index = arr[x] + 1 ;
-    printf("arr[x] = %i\n",arr[x]);
-
     //save myString in pointer array
     mem[x] = myString;
 
