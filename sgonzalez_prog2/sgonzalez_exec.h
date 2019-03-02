@@ -4,4 +4,4 @@
 //
 
 int executeCmd(char **args);
-int getLength(char** str);
+

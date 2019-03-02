@@ -28,17 +28,14 @@ int main()
 
 		if((buff[0] == 'x') && (buff[1] == '\0'))
 		{
-      free(args);
 			exit(0);
 		}
 
 		// make the argument vector
 		args = argtok(buff);
 		// execute the command
-		int a = executeCmd(args);
-
+		executeCmd(args);
 	}
-
 	return 0;
 
 }
