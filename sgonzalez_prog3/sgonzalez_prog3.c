@@ -32,12 +32,12 @@ int main(int argc, char *argv[])
   /* Setup threads to find prime numbers */
   pthread_attr_init(&attr);
   numThreads = 2;
-  
+  //
 
   /* Setup a mini shell thread to provide interactivity with the user */
   pthread_create(&tidshell,&attr,mini_shell,NULL);
   
-#if 0
+
 
   /* Create primes output file */
   primeFile = fopen("primest","w");
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
   /* Record execution time */
   after = time(NULL);
   printf("\nPrime search done after %ld seconds\n", after-before);
-#endif
+
 
   sleep(20);
   

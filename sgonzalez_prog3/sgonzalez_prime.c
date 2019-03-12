@@ -16,6 +16,14 @@ int	numThreads;
 
 void *prime_search(void *param)
 {
+	/*For range values*/
+	unsigned int start,end,current;
+	start = param[2];
+	end = param[3];
+	for (unsigned int i = start; i < end; i++){
+		param[1] = i;
+		return test_prime(i);
+	}
 
 }
 
@@ -75,10 +83,10 @@ void *mini_shell(void *param)
 
 int test_prime(int n)
 {
-	if(n>1){
+	if(n>1){ // primes are bigger than 1
 		if(n == 2){return 1;}
-		if(n % 2 == 0){return 0;}
-		for(int i = 3; i < 11; i+=2){
+		if(n % 2 == 0){return 0;} // no evens allowed, except 2
+		for(int i = 3; i < 13; i+=2){ // check if divisible by 3,5,7,9,11,13..when it's not the same number
 			if(n % i == 0 && n!=i){return 0;}	
 		}
 		return 1;

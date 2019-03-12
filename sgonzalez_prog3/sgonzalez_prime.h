@@ -17,7 +17,7 @@ typedef struct				// Prime search thread data
 
 /* Shared global variables */
 extern sPRIME_THREAD primeThreadData[MAX_THREADS];	// Prime search thread data
-extern int numThreads;										// Number of prime search threads
+extern int numThreads;								// Number of prime search threads
 
 /* Function prototypes */
 int test_prime(int n);
