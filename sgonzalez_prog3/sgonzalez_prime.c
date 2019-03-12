@@ -8,7 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "student_prime.h"
+#include "sgonzalez_prime.h"
 
 /* Global variables that are shared */
 sPRIME_THREAD primeThreadData[MAX_THREADS];
@@ -75,7 +75,15 @@ void *mini_shell(void *param)
 
 int test_prime(int n)
 {
-
-    return 0;
-
+	if(n>1){
+		if(n == 2){return 1;}
+		if(n % 2 == 0){return 0;}
+		for(int i = 3; i < 11; i+=2){
+			if(n % i == 0 && n!=i){return 0;}	
+		}
+		return 1;
+	}
+	else{
+		return 0;
+	}
 }

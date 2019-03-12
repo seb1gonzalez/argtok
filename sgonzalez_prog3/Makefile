@@ -1,6 +1,6 @@
 # Complete this rule
 student_prog3: student_prime.o student_prog3.c
-	gcc ???
+	gcc
 
 # Replace with correct file names
 student_prime.o: student_prime.c student_prime.h
@@ -8,3 +8,5 @@ student_prime.o: student_prime.c student_prime.h
 
 clean:
 	rm *.o; rm student_prog3
+main:
+	gcc sgonzalez_prime.c sgonzalez_prime.h main.c -o main
