@@ -21,10 +21,28 @@ FILE *primeThreadFile;
 int main(int argc, char *argv[])
 {
   int i, bytesRead, bytesWritten;
-  pthread_t tid[MAX_THREADS]; 
+  pthread_t tid[MAX_THREADS];
   pthread_t tidshell;
   pthread_attr_t attr;
   time_t before, after;
+  unsigned int range1[2];
+  unsigned int range2[2];
+  range1[0] = 1; range1[1] = 2500000;
+  range2[0] = 2500001; range2[1] = 5000000;
+
+
+  /*Setup for the first thread*/
+  primeThreadData[0].num = 1; //thread num
+  primeThreadData[0].current = 0;
+  primeThreadData[0].low = range1[0];
+  primeThreadData[0].high = range1[1];
+  /*Setup for second thread*/
+  primeThreadData[1].num = 2; //thread num
+  primeThreadData[1].current = 0;
+  primeThreadData[1].low = range2[0];
+  primeThreadData[1].high = range2[1];
+
+
 
   /* Record time at start */
   before = time(NULL);
@@ -33,10 +51,16 @@ int main(int argc, char *argv[])
   pthread_attr_init(&attr);
   numThreads = 2;
   //
+  /*Create threads to look up prime numbers*/
+
+  pthread_create(&tid[0],&attr,prime_search,&primeThreadData[0]);
+  pthread_create(&tid[1],&attr,prime_search,&primeThreadData[1]);
+
+
 
   /* Setup a mini shell thread to provide interactivity with the user */
   pthread_create(&tidshell,&attr,mini_shell,NULL);
-  
+
 
 
   /* Create primes output file */
@@ -75,18 +99,17 @@ int main(int argc, char *argv[])
 		fclose(primeThreadFile);
 	}
   }
-  
+
   /* Record execution time */
   after = time(NULL);
   printf("\nPrime search done after %ld seconds\n", after-before);
 
 
   sleep(20);
-  
+
   /* Lastly, kill the interaction thread */
   pthread_kill(tidshell, SIGKILL);
 
   return 0;
 
 }
-

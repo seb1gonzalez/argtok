@@ -23,4 +23,3 @@ extern int numThreads;								// Number of prime search threads
 int test_prime(int n);
 void *prime_search(void *param);
 void *mini_shell(void *param);
-
