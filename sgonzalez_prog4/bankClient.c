@@ -85,13 +85,13 @@ bankClient servIPAddr servPortNum transaction acctNum value
       .value = atoi(argv[5])
     };
     if(strcmp(argv[3],"B") == 0){
-      bank_sg.trans = 2;
+      bank_sg.trans = BANK_TRANS_INQUIRY;
     }
     if(strcmp(argv[3],"D") == 0){
-      bank_sg.trans = 0;
+      bank_sg.trans = BANK_TRANS_DEPOSIT;
     }
     if(strcmp(argv[3],"W") == 0){
-      bank_sg.trans = 1;
+      bank_sg.trans = BANK_TRANS_WITHDRAW;
     }
   //  for (int i=3; i < argc; i++){
 
