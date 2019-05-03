@@ -14,3 +14,6 @@ typedef struct
     unsigned int acctnum;	/* account number */
     unsigned int value;		/* value */
 } sBANK_PROTOCOL;
+int setupTCPClient(char *servIPAddr, unsigned int portNum);
+int atoi(char *str);
+int close(int socket);

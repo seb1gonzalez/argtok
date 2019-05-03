@@ -4,19 +4,13 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "banking.h"
-#include <sys>
+
 
 /*
-port 26207
+port 26208
 ip 129.108.32.2
 
-instructions:
-B for Balance
-D for Desposit
-W for withdrawal
 
-command line arguments accepted:
-bankClient servIPAddr servPortNum transaction acctNum value
 
 */
 
@@ -56,6 +50,8 @@ int main(int argc, char **argv)
     int mySocket;
     char serverIP[15];
     unsigned int portNum;
+    char recvBuff[1024];
+    char sendString[100];
 
     if(argc != 6)
     {
@@ -74,7 +70,42 @@ int main(int argc, char **argv)
     {
         return -1;
     }
+/*instructions:
+B for Balance
+D for Desposit
+W for withdrawal
+command line arguments accepted:
+bankClient servIPAddr servPortNum transaction acctNum value
+
+example:
+127.0.0.1 198.128.10.255 3306 D 123456 500
+*/
+     sBANK_PROTOCOL bank_sg = {
+      .trans = htonl(atoi(argv[3])),
+      .acctnum = htonl(atoi(argv[4])),
+      .value = htonl(atoi(argv[5]))
+    };
+  //  for (int i=3; i < argc; i++){
+
+      /* Setup the message */
+    sprintf(sendString, "%s%s ", sendString, bank_sg.trans);
+    sprintf(sendString, "%s%s ", sendString, bank_sg.acctnum);
+    sprintf(sendString, "%s%s ", sendString, bank_sg.value);
+//}
+    sprintf(sendString, "%s\n", sendString);
+
+    /* Send string to server */
+    //char[128] message;
+
+    //send(mySocket,bank_sg, sizeof(bank_sg), 0);
+    send(mySocket,sendString, strlen(sendString), 0);
+    //printf("Sent:\n%s\n", sendString);
+
+    /* Receive a string from a server */
+    recv(mySocket, recvBuff, 1023, 0);
+    printf("Received:\n%s\n", recvBuff);
 
 
     close(mySocket);
+
 }
