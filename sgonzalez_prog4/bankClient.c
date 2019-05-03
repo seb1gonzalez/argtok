@@ -50,8 +50,7 @@ int main(int argc, char **argv)
     int mySocket;
     char serverIP[15];
     unsigned int portNum;
-    char recvBuff[128];
-    char sendString[128];
+
 
     if(argc != 6)
     {
@@ -70,50 +69,62 @@ int main(int argc, char **argv)
     {
         return -1;
     }
-/*instructions:
+
+/*
+instructions:
 B for Balance
 D for Desposit
-W for withdrawal
+W for Withdrawal
+
 command line arguments accepted:
 bankClient servIPAddr servPortNum transaction acctNum value
+
+Example:
 ./bankClient 129.108.32.2 26207 B  666 0
-
 */
+  /*Setup Recieve Buffer*/
+  char recvBuff[128];
 
-     sBANK_PROTOCOL bank_sg = {
-      .acctnum = atoi(argv[4]),
-      .value = atoi(argv[5])
-    };
-    if(strcmp(argv[3],"B") == 0){
-      bank_sg.trans = BANK_TRANS_INQUIRY;
-    }
-    if(strcmp(argv[3],"D") == 0){
-      bank_sg.trans = BANK_TRANS_DEPOSIT;
-    }
-    if(strcmp(argv[3],"W") == 0){
-      bank_sg.trans = BANK_TRANS_WITHDRAW;
-    }
-  //  for (int i=3; i < argc; i++){
+  /*Setup Send Buffer*/
+  char sendString[128];
 
-      /* Setup the message */
-    sprintf(sendString, "%s%d ", sendString, bank_sg.trans);
-    sprintf(sendString, "%s%d ", sendString, bank_sg.acctnum);
-    sprintf(sendString, "%s%d ", sendString, bank_sg.value);
-//}
-    sprintf(sendString, "%s\n", sendString);
+  /*Create the struct, reading the command line arguments*/
+  sBANK_PROTOCOL bank_sg = {
+    .acctnum = atoi(argv[4]),
+    .value = atoi(argv[5])
+  };
 
-    /* Send string to server */
-    //char[128] message;
+    /*Set Transaction*/
+  if(strcmp(argv[3],"B") == 0){
+    bank_sg.trans = BANK_TRANS_INQUIRY;
+  }
+  else if(strcmp(argv[3],"D") == 0){
+    bank_sg.trans = BANK_TRANS_DEPOSIT;
+  }
+  else if(strcmp(argv[3],"W") == 0){
+    bank_sg.trans = BANK_TRANS_WITHDRAW;
+  }
+  else{
+    return -1;
+  }
 
-    //send(mySocket,bank_sg, sizeof(bank_sg), 0);
-    send(mySocket,sendString, strlen(sendString), 0);
-    //printf("Sent:\n%s\n", sendString);
+  /* Setup the message */
+  sprintf(sendString, "%s%d ", sendString, bank_sg.trans);
+  sprintf(sendString, "%s%d ", sendString, bank_sg.acctnum);
+  sprintf(sendString, "%s%d ", sendString, bank_sg.value);
+  sprintf(sendString, "%s\n", sendString);
 
-    /* Receive a string from a server */
-    recv(mySocket, recvBuff, 1023, 0);
-    printf("Received:\n%s\n", recvBuff);
+  /* Send string to server */
+  //send(mySocket,bank_sg, sizeof(bank_sg), 0);
+  send(mySocket,sendString, strlen(sendString), 0);
+  printf("Sent:\n%s\n", sendString);
+
+  /* Receive a string from a server */
+  recv(mySocket, recvBuff, 1023, 0);
+  printf("Received:\n%s\n", recvBuff);
 
 
-    close(mySocket);
+  close(mySocket);
+  return 1;
 
 }
