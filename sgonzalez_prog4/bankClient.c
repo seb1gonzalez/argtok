@@ -50,8 +50,8 @@ int main(int argc, char **argv)
     int mySocket;
     char serverIP[15];
     unsigned int portNum;
-    char recvBuff[1024];
-    char sendString[100];
+    char recvBuff[128];
+    char sendString[128];
 
     if(argc != 6)
     {
@@ -76,21 +76,29 @@ D for Desposit
 W for withdrawal
 command line arguments accepted:
 bankClient servIPAddr servPortNum transaction acctNum value
+./bankClient 129.108.32.2 26207 B  666 0
 
-example:
-127.0.0.1 198.128.10.255 3306 D 123456 500
 */
+
      sBANK_PROTOCOL bank_sg = {
-      .trans = htonl(atoi(argv[3])),
-      .acctnum = htonl(atoi(argv[4])),
-      .value = htonl(atoi(argv[5]))
+      .acctnum = atoi(argv[4]),
+      .value = atoi(argv[5])
     };
+    if(strcmp(argv[3],"B") == 0){
+      bank_sg.trans = 2;
+    }
+    if(strcmp(argv[3],"D") == 0){
+      bank_sg.trans = 0;
+    }
+    if(strcmp(argv[3],"W") == 0){
+      bank_sg.trans = 1;
+    }
   //  for (int i=3; i < argc; i++){
 
       /* Setup the message */
-    sprintf(sendString, "%s%s ", sendString, bank_sg.trans);
-    sprintf(sendString, "%s%s ", sendString, bank_sg.acctnum);
-    sprintf(sendString, "%s%s ", sendString, bank_sg.value);
+    sprintf(sendString, "%s%d ", sendString, bank_sg.trans);
+    sprintf(sendString, "%s%d ", sendString, bank_sg.acctnum);
+    sprintf(sendString, "%s%d ", sendString, bank_sg.value);
 //}
     sprintf(sendString, "%s\n", sendString);
 
