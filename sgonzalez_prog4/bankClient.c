@@ -81,12 +81,6 @@ bankClient servIPAddr servPortNum transaction acctNum value
 
 Example:
 ./bankClient 129.108.32.2 26207 B  666 0
-*/
-  /*Setup Recieve Buffer*/
-  char recvBuff[128];
-
-  /*Setup Send Buffer*/
-  char sendString[128];
 
   /*Create the struct, reading the command line arguments*/
   sBANK_PROTOCOL bank_sg = {
@@ -108,23 +102,47 @@ Example:
     return -1;
   }
 
-  /* Setup the message */
-  sprintf(sendString, "%s%d ", sendString, bank_sg.trans);
-  sprintf(sendString, "%s%d ", sendString, bank_sg.acctnum);
-  sprintf(sendString, "%s%d ", sendString, bank_sg.value);
-  sprintf(sendString, "%s\n", sendString);
+//How to send struct? stackoverflow says it's crazy
+  /* Send protocol to server */
+  send(mySocket,&bank_sg, sizeof(bank_sg), 0);// the & fixed everything, :| it's always the little things
 
-  /* Send string to server */
-  //send(mySocket,bank_sg, sizeof(bank_sg), 0);
-  send(mySocket,sendString, strlen(sendString), 0);
-  printf("Sent:\n%s\n", sendString);
 
-  /* Receive a string from a server */
-  recv(mySocket, recvBuff, 1023, 0);
-  printf("Received:\n%s\n", recvBuff);
+
+  /* Receive a protocol from a server */
+  sBANK_PROTOCOL response;
+  recv(mySocket, &response, sizeof(response), 0);
+
+  //Handle results VALUE = PENNIES!
+
+/*Withdrawal Response*/
+if(response.trans == BANK_TRANS_WITHDRAW){
+  printf("%s for account %d\n","Withdrawal",response.acctnum);
+  if(response.value <= 0){
+    printf("%s\n","Can't process transaction, insufficient funds :(" );
+  }
+  else{
+    int dollars = response.value / 100;
+    int cents = response.value % 100;
+    printf("Here you go: $ %d . %d\n",dollars,cents);
+  }
+}
+/*Deposit Response*/
+if(response.trans == BANK_TRANS_DEPOSIT){
+  int dollars = response.value / 100;
+  int cents = response.value % 100;
+  printf("Account number: %d\n",response.acctnum);
+  printf("%s :%d . %d\n", "You desposited",dollars,cents);
+}
+
+/*Balance Response*/
+if (response.trans == BANK_TRANS_INQUIRY) {
+  int dollars = response.value / 100;
+  int cents = response.value % 100;
+  printf("Account number %d\n",response.acctnum );
+  printf("Current Balance: $ %d.%d \n",dollars,cents);
+}
+
 
 
   close(mySocket);
-  return 1;
-
 }
